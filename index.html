@@ -1,0 +1,160 @@
+<html>
+	<head>
+		<link href="bootstrap.min.css" rel="stylesheet" type="text/css">
+		<style>
+			.extraPadding {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="row">
+						<p style="font-size:32px;"><b>Divide users with a new line</b></p>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<p><b>Top seed</b></p>
+							<textarea id="topTextArea" rows="4" class="form-control">Top1&#10;Top2&#10;Top3&#10;Top4</textarea>
+						</div>
+					</div>
+
+					<div class="extraPadding"></div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<p><b>High seed</b></p>
+							<textarea id="highTextArea" rows="4" class="form-control">High1&#10;High2&#10;High3&#10;High4</textarea>
+						</div>
+					</div>
+
+					<div class="extraPadding"></div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<p><b>Low seed</b></p>
+							<textarea id="lowTextArea" rows="4" class="form-control">Low1&#10;Low2&#10;Low3&#10;Low4</textarea>
+						</div>
+					</div>
+
+					<div class="extraPadding"></div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<p><b>Unseeded</b></p>
+							<textarea id="unseededTextArea" rows="4" class="form-control">Unseeded1&#10;Unseeded2&#10;Unseeded3&#10;Unseeded4</textarea>
+						</div>
+					</div>
+
+					<div class="extraPadding"></div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<button id="randomize" type="button" class="btn btn-primary pull-right">Randomize</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-8">
+					<div class="row">
+						<p style="font-size:32px;"><b>Results</b></p>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<table class="table table-striped">
+								<thead>
+									<th>Group 1</th>
+								</thead>
+
+								<tbody id="group1TableBody">
+								</tbody>
+							</table>
+
+							<table class="table table-striped">
+								<thead>
+									<th>Group 2</th>
+								</thead>
+
+								<tbody id="group2TableBody">
+								</tbody>
+							</table>
+
+							<table class="table table-striped">
+								<thead>
+									<th>Group 3</th>
+								</thead>
+
+								<tbody id="group3TableBody">
+								</tbody>
+							</table>
+
+							<table class="table table-striped">
+								<thead>
+									<th>Group 4</th>
+								</thead>
+
+								<tbody id="group4TableBody">
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$("#randomize").on('click', function() {
+				$("#group1TableBody").empty();
+				$("#group2TableBody").empty();
+				$("#group3TableBody").empty();
+				$("#group4TableBody").empty();
+
+				var topSeedTextarea = $("#topTextArea").val().split(/\n/);
+				var highSeedTextarea = $("#highTextArea").val().split(/\n/);;
+				var lowSeedTextarea = $("#lowTextArea").val().split(/\n/);;
+				var unseededTextarea = $("#unseededTextArea").val().split(/\n/);;
+
+				shuffle(topSeedTextarea);
+				shuffle(highSeedTextarea);
+				shuffle(lowSeedTextarea);
+				shuffle(unseededTextarea);
+
+				for(var i = 1; i <= 4; i ++) {
+					$("#group" + i + "TableBody").append("<tr><td>" + topSeedTextarea[i - 1] + "</td></tr>");
+				}
+
+				for(var i = 1; i <= 4; i ++) {
+					$("#group" + i + "TableBody").append("<tr><td>" + highSeedTextarea[i - 1] + "</td></tr>");
+				}
+
+				for(var i = 1; i <= 4; i ++) {
+					$("#group" + i + "TableBody").append("<tr><td>" + lowSeedTextarea[i - 1] + "</td></tr>");
+				}
+
+				for(var i = 1; i <= 4; i ++) {
+					$("#group" + i + "TableBody").append("<tr><td>" + unseededTextarea[i - 1] + "</td></tr>");
+				}
+			});
+		});
+
+		function shuffle(array) {
+			var currentIndex = array.length, temporaryValue, randomIndex;
+			while (0 !== currentIndex) {
+				randomIndex = Math.floor(Math.random() * currentIndex);
+				currentIndex -= 1;
+				temporaryValue = array[currentIndex];
+				array[currentIndex] = array[randomIndex];
+				array[randomIndex] = temporaryValue;
+			}
+			return array;
+		}
+	</script>
+</html>

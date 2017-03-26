@@ -8,6 +8,10 @@
 			.extraPadding {
 				padding: 10px;
 			}
+
+			.showThis {
+				display: none;
+			}
 		</style>
 	</head>
 
@@ -20,6 +24,14 @@
 							<tr>
 								<td>Amount of groups</td><td><input class="groups" type="range" min="1" max="15" value="4" /></td>
 							</tr>
+
+							<tr>
+								<td>Enter the seeds</td><td><textarea id="seeds" rows="4" class="form-control" style="resize: none;">Top seed&#13;High seed&#13;Low seed&#13;Unseeded</textarea></td>
+							</tr>
+
+							<tr>
+								<td>Show seed name in front of name</td><td><input type="checkbox" id="showSeedName" /></td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -31,39 +43,7 @@
 						<p style="font-size:32px;"><b>Divide users with a new line</b></p>
 					</div>
 
-					<div class="row">
-						<div class="col-sm-12">
-							<p><b>Top seed</b></p>
-							<textarea id="topTextArea" rows="4" class="form-control"></textarea>
-						</div>
-					</div>
-
-					<div class="extraPadding"></div>
-
-					<div class="row">
-						<div class="col-sm-12">
-							<p><b>High seed</b></p>
-							<textarea id="highTextArea" rows="4" class="form-control"></textarea>
-						</div>
-					</div>
-
-					<div class="extraPadding"></div>
-
-					<div class="row">
-						<div class="col-sm-12">
-							<p><b>Low seed</b></p>
-							<textarea id="lowTextArea" rows="4" class="form-control"></textarea>
-						</div>
-					</div>
-
-					<div class="extraPadding"></div>
-
-					<div class="row">
-						<div class="col-sm-12">
-							<p><b>Unseeded</b></p>
-							<textarea id="unseededTextArea" rows="4" class="form-control"></textarea>
-						</div>
-					</div>
+					<div id="seedArea">	</div>
 
 					<div class="extraPadding"></div>
 
@@ -80,8 +60,7 @@
 					</div>
 
 					<div class="row">
-						<div class="col-sm-12" id="allGroups">
-						</div>
+						<div class="col-sm-12" id="allGroups"></div>
 					</div>
 				</div>
 			</div>
@@ -92,6 +71,10 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	<script>
 		$(document).ready(function() {
+			var allSeeds = $("#seeds").val().split(/\n/);
+			for(var i = 0; i < allSeeds.length; i ++)
+				$("#seedArea").append('<div class="row"><div class="col-sm-12"><p><b>' + allSeeds[i] + '</b></p><textarea id="' + allSeeds[i].replace(/\s+/g, '').toLowerCase() + 'TextArea" rows="4" class="form-control"></textarea></div></div><div class="extraPadding"></div>');
+
 			var amountOfGroups = $(".groups").val();
 			for(var i = 1; i <= amountOfGroups; i ++)
 				$("#allGroups").append('<table class="table table-striped"><thead><th>Group ' + i + '</th></thead><tbody id="group' + i + 'TableBody"></tbody></table>');
@@ -102,53 +85,58 @@
 					$("#allGroups").append('<table class="table table-striped"><thead><th>Group ' + i + '</th></thead><tbody id="group' + i + 'TableBody"></tbody></table>');
 			});
 
+			$("#seeds").on('input', function() {
+				$("#seedArea").empty();
+
+				allSeeds = $("#seeds").val().split(/\n/);
+				for(var i = 0; i < allSeeds.length; i ++)
+					$("#seedArea").append('<div class="row"><div class="col-sm-12"><p><b>' + allSeeds[i] + '</b></p><textarea id="' + allSeeds[i].replace(/\s+/g, '').toLowerCase() + 'TextArea" rows="4" class="form-control"></textarea></div></div><div class="extraPadding"></div>');
+
+			});
+
 			$("#randomize").on('click', function() {
-				$("#group1TableBody").empty();
-				$("#group2TableBody").empty();
-				$("#group3TableBody").empty();
-				$("#group4TableBody").empty();
+				for(var i = 1; i < $(".groups").val() + 1; i ++)
+					$("#group" + i + "TableBody").empty();
 
-				var topSeedTextarea = $("#topTextArea").val().split(/\n/);
-				var highSeedTextarea = $("#highTextArea").val().split(/\n/);
-				var lowSeedTextarea = $("#lowTextArea").val().split(/\n/);
-				var unseededTextarea = $("#unseededTextArea").val().split(/\n/);
+				for(var i in allSeeds)
+					$("#" + allSeeds[i].replace(/\s+/g, '').toLowerCase() + "TextArea").empty();
 
-				if(topSeedTextarea.length !== $(".groups").val()) {
-					alert("The Topseed doesn't have enough players. Players required: " + $(".groups").val() + ", currently filled in: " + topSeedTextarea.length + ".");
-					return;
+				for(var i in allSeeds) {
+					var tempArr = $("#" + allSeeds[i].replace(/\s+/g, '').toLowerCase() + "TextArea").val().split(/\n/);
+
+					if(parseInt(tempArr.length) !== parseInt($(".groups").val())) {
+						alert("The " + allSeeds[i] + " doesn't have enough players. Players required: " + $(".groups").val() + ", currently filled in: " + tempArr.length + ".");
+						return;
+					}
 				}
 
-				if(highSeedTextarea.length !== $(".groups").val()) {
-					alert("The Topseed doesn't have enough players. Players required: " + $(".groups").val() + ", currently filled in: " + highSeedTextarea.length + ".");
-					return;
+				var seedArray = {};
+				for(i in allSeeds) {
+					var nameOfSeed = allSeeds[i].replace(/\s+/g, '').toLowerCase();
+					seedArray[nameOfSeed] = [];
+					var tempArr = $("#" + allSeeds[i].replace(/\s+/g, '').toLowerCase() + "TextArea").val().split(/\n/);
+					shuffle(tempArr);
+					
+					for(var value in tempArr)
+						seedArray[nameOfSeed].push(tempArr[value]);
 				}
 
-				if(lowSeedTextarea.length !== $(".groups").val()) {
-					alert("The Topseed doesn't have enough players. Players required: " + $(".groups").val() + ", currently filled in: " + lowSeedTextarea.length + ".");
-					return;
+				for(var seed in seedArray) {
+					for(var i = 1; i <= $(".groups").val(); i ++)
+						$("#group" + i + "TableBody").append("<tr><td><span class=\"hideThis\">" + seed + ": </span>" + seedArray[seed][i - 1] + "</td></tr>");
 				}
 
-				if(unseededTextarea.length !== $(".groups").val()) {
-					alert("The Topseed doesn't have enough players. Players required: " + $(".groups").val() + ", currently filled in: " + unseededTextarea.length + ".");
-					return;
-				}
+				if($('#showSeedName').is(":checked"))
+					$(".hideThis").css("display", "inline");
+				else
+					$(".hideThis").css("display", "none");
+			});
 
-				shuffle(topSeedTextarea);
-				shuffle(highSeedTextarea);
-				shuffle(lowSeedTextarea);
-				shuffle(unseededTextarea);
-
-				for(var i = 1; i <= $(".groups").val(); i ++)
-					$("#group" + i + "TableBody").append("<tr><td>" + topSeedTextarea[i - 1] + "</td></tr>");
-
-				for(var i = 1; i <= $(".groups").val(); i ++)
-					$("#group" + i + "TableBody").append("<tr><td>" + highSeedTextarea[i - 1] + "</td></tr>");
-
-				for(var i = 1; i <= $(".groups").val(); i ++)
-					$("#group" + i + "TableBody").append("<tr><td>" + lowSeedTextarea[i - 1] + "</td></tr>");
-
-				for(var i = 1; i <= $(".groups").val(); i ++)
-					$("#group" + i + "TableBody").append("<tr><td>" + unseededTextarea[i - 1] + "</td></tr>");
+			$("#showSeedName").on('change', function() {
+				if(this.checked)
+					$(".hideThis").css("display", "inline");
+				else if(!this.checked)
+					$(".hideThis").css("display", "none");
 			});
 		});
 

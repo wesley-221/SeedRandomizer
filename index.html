@@ -1,7 +1,9 @@
+<!doctype html>
 <html>
 	<head>
-		<link href="bootstrap.min.css" rel="stylesheet" type="text/css">
-		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+		<title>Seed randomizer</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" />
 		<style>
 			.extraPadding {
 				padding: 10px;
@@ -32,7 +34,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<p><b>Top seed</b></p>
-							<textarea id="topTextArea" rows="4" class="form-control">Top1&#10;Top2&#10;Top3&#10;Top4</textarea>
+							<textarea id="topTextArea" rows="4" class="form-control"></textarea>
 						</div>
 					</div>
 
@@ -41,7 +43,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<p><b>High seed</b></p>
-							<textarea id="highTextArea" rows="4" class="form-control">High1&#10;High2&#10;High3&#10;High4</textarea>
+							<textarea id="highTextArea" rows="4" class="form-control"></textarea>
 						</div>
 					</div>
 
@@ -50,7 +52,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<p><b>Low seed</b></p>
-							<textarea id="lowTextArea" rows="4" class="form-control">Low1&#10;Low2&#10;Low3&#10;Low4</textarea>
+							<textarea id="lowTextArea" rows="4" class="form-control"></textarea>
 						</div>
 					</div>
 
@@ -59,7 +61,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<p><b>Unseeded</b></p>
-							<textarea id="unseededTextArea" rows="4" class="form-control">Unseeded1&#10;Unseeded2&#10;Unseeded3&#10;Unseeded4</textarea>
+							<textarea id="unseededTextArea" rows="4" class="form-control"></textarea>
 						</div>
 					</div>
 
@@ -91,16 +93,13 @@
 	<script>
 		$(document).ready(function() {
 			var amountOfGroups = $(".groups").val();
-
-			for(var i = 1; i <= amountOfGroups; i ++) {
+			for(var i = 1; i <= amountOfGroups; i ++)
 				$("#allGroups").append('<table class="table table-striped"><thead><th>Group ' + i + '</th></thead><tbody id="group' + i + 'TableBody"></tbody></table>');
-			}
 
 			$(".groups").on("input", function() {
 				$("#allGroups").empty();
-				for(var i = 1; i <= $(".groups").val(); i ++) {
+				for(var i = 1; i <= $(".groups").val(); i ++)
 					$("#allGroups").append('<table class="table table-striped"><thead><th>Group ' + i + '</th></thead><tbody id="group' + i + 'TableBody"></tbody></table>');
-				}
 			});
 
 			$("#randomize").on('click', function() {
@@ -139,21 +138,17 @@
 				shuffle(lowSeedTextarea);
 				shuffle(unseededTextarea);
 
-				for(var i = 1; i <= $(".groups").val(); i ++) {
+				for(var i = 1; i <= $(".groups").val(); i ++)
 					$("#group" + i + "TableBody").append("<tr><td>" + topSeedTextarea[i - 1] + "</td></tr>");
-				}
 
-				for(var i = 1; i <= $(".groups").val(); i ++) {
+				for(var i = 1; i <= $(".groups").val(); i ++)
 					$("#group" + i + "TableBody").append("<tr><td>" + highSeedTextarea[i - 1] + "</td></tr>");
-				}
 
-				for(var i = 1; i <= $(".groups").val(); i ++) {
+				for(var i = 1; i <= $(".groups").val(); i ++)
 					$("#group" + i + "TableBody").append("<tr><td>" + lowSeedTextarea[i - 1] + "</td></tr>");
-				}
 
-				for(var i = 1; i <= $(".groups").val(); i ++) {
+				for(var i = 1; i <= $(".groups").val(); i ++)
 					$("#group" + i + "TableBody").append("<tr><td>" + unseededTextarea[i - 1] + "</td></tr>");
-				}
 			});
 		});
 
